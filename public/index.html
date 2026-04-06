@@ -1,0 +1,244 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>N-Genius Hosted Payment Test</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="page">
+      <section class="hero card">
+        <div>
+          <p class="eyebrow">Network International / N-Genius</p>
+          <h1>Hosted Payment Page Test</h1>
+          <p class="lead">
+            Create a sandbox or production order, open the hosted pay page, then check the order status from the same test UI.
+          </p>
+        </div>
+        <div class="env-toggle-row">
+          <span class="env-toggle-label">Environment</span>
+          <div class="env-toggle" role="group" aria-label="Environment selector">
+            <button type="button" id="envSandboxBtn" class="env-btn active" data-env="sandbox">Sandbox</button>
+            <button type="button" id="envProductionBtn" class="env-btn" data-env="production">Production</button>
+          </div>
+        </div>
+        <div class="meta-grid">
+          <div class="meta-item">
+            <span>Mode</span>
+            <strong id="modeBadge">Loading…</strong>
+          </div>
+          <div class="meta-item">
+            <span>Outlet ID</span>
+            <strong id="outletValue">—</strong>
+          </div>
+          <div class="meta-item">
+            <span>Server URL</span>
+            <strong id="serverValue">—</strong>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div class="section-title-row">
+          <h2>Test Authentication</h2>
+          <span class="pill">Step 0</span>
+        </div>
+        <p class="small muted">Verify your API key works and inspect the access token returned by N-Genius.</p>
+        <div class="button-row">
+          <button type="button" id="testAuthBtn">Test Authentication</button>
+        </div>
+        <div id="authResult" class="auth-result hidden">
+          <div class="auth-grid">
+            <div class="auth-field">
+              <span>Status</span>
+              <strong id="authStatus">—</strong>
+            </div>
+            <div class="auth-field">
+              <span>Account Name</span>
+              <strong id="authName">—</strong>
+            </div>
+            <div class="auth-field">
+              <span>Realm</span>
+              <strong id="authRealm">—</strong>
+            </div>
+            <div class="auth-field">
+              <span>Account Type</span>
+              <strong id="authType">—</strong>
+            </div>
+            <div class="auth-field">
+              <span>Token Expires</span>
+              <strong id="authExpiry">—</strong>
+            </div>
+            <div class="auth-field">
+              <span>Mode</span>
+              <strong id="authMode">—</strong>
+            </div>
+          </div>
+          <label class="full-width" style="margin-top:12px">
+            <span>Access Token (full — copy for manual testing)</span>
+            <textarea id="authToken" rows="3" readonly style="font-size:11px;font-family:monospace;width:100%;resize:vertical"></textarea>
+          </label>
+        </div>
+        <pre id="authOutput" class="json-output hidden">—</pre>
+      </section>
+
+      <section class="grid two-cols">
+        <form id="paymentForm" class="card form-card">
+          <div class="section-title-row">
+            <h2>Create test payment</h2>
+            <span class="pill">Step 1</span>
+          </div>
+
+          <div class="field-grid">
+            <label>
+              <span>Amount</span>
+              <input type="number" name="amount" value="10.00" min="0.01" step="0.01" required />
+            </label>
+
+            <label>
+              <span>Currency</span>
+              <input type="text" name="currencyCode" value="USD" maxlength="3" required />
+            </label>
+
+            <label>
+              <span>Action</span>
+              <select name="action">
+                <option value="AUTH" selected>AUTH</option>
+                <option value="PURCHASE">PURCHASE</option>
+                <option value="SALE">SALE</option>
+              </select>
+            </label>
+
+            <label>
+              <span>Language</span>
+              <select name="language">
+                <option value="en" selected>English</option>
+                <option value="ar">Arabic</option>
+              </select>
+            </label>
+
+            <label class="full-width">
+              <span>Email</span>
+              <input type="email" name="emailAddress" value="tester@example.com" placeholder="tester@example.com" />
+            </label>
+
+            <label class="full-width">
+              <span>Item description</span>
+              <input type="text" name="itemDescription" value="N-Genius sandbox test order" />
+            </label>
+
+            <label class="full-width">
+              <span>Redirect URL</span>
+              <input type="url" name="redirectUrl" id="redirectUrlInput" />
+            </label>
+          </div>
+
+          <div class="checkbox-row">
+            <label class="checkbox">
+              <input type="checkbox" id="autoRedirect" checked />
+              <span>Open the hosted pay page automatically after order creation</span>
+            </label>
+          </div>
+
+          <div class="button-row">
+            <button type="submit" id="createBtn">Create payment</button>
+            <button type="button" class="secondary" id="openLastPaymentBtn">Open last pay page</button>
+          </div>
+        </form>
+
+        <div class="card form-card">
+          <div class="section-title-row">
+            <h2>Check order status</h2>
+            <span class="pill">Step 2</span>
+          </div>
+
+          <form id="statusForm">
+            <label class="full-width">
+              <span>Order reference</span>
+              <input type="text" id="orderReferenceInput" name="reference" placeholder="Paste or reuse the last created order reference" required />
+            </label>
+
+            <div class="button-row">
+              <button type="submit">Fetch status</button>
+              <button type="button" class="secondary" id="useLastRefBtn">Use last reference</button>
+              <a href="/result.html" class="button-link">Open result page</a>
+            </div>
+          </form>
+
+          <div id="statusSummary" class="summary-box muted">
+            No order checked yet.
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+          <div class="section-title-row">
+            <h2>Official sandbox test cards</h2>
+            <span class="pill muted-pill">Docs</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Scheme</th>
+                  <th>PAN</th>
+                  <th>Outcome</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>Visa</td>
+                  <td><code>4111111111111111</code></td>
+                  <td>Success 00</td>
+                </tr>
+                <tr>
+                  <td>Visa</td>
+                  <td><code>4663295942784758</code></td>
+                  <td>Declined 05</td>
+                </tr>
+                <tr>
+                  <td>Mastercard</td>
+                  <td><code>5168441223630339</code></td>
+                  <td>Success 00</td>
+                </tr>
+                <tr>
+                  <td>Mastercard</td>
+                  <td><code>5513935292057458</code></td>
+                  <td>Declined 05</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="small muted">
+            Use any CVV and expiry unless your specific test case says otherwise.
+          </p>
+      </section>
+
+      <section class="card">
+        <div class="section-title-row">
+          <h2>Order Result</h2>
+          <span class="pill muted-pill">Debug</span>
+        </div>
+        <div id="orderResultBanner" class="hidden" style="margin-bottom:12px">
+          <div class="auth-grid">
+            <div class="auth-field">
+              <span>Order Reference</span>
+              <strong id="resultOrderRef">—</strong>
+            </div>
+            <div class="auth-field">
+              <span>Payment State</span>
+              <strong id="resultPayState">—</strong>
+            </div>
+          </div>
+          <div style="margin-top:10px">
+            <a id="resultPayLink" href="#" target="_blank" class="pay-link hidden">Open Payment Page →</a>
+          </div>
+        </div>
+        <pre id="apiOutput" class="json-output">Ready.</pre>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

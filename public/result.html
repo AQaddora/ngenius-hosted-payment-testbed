@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>N-Genius Result</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="page narrow">
+      <section class="card">
+        <p class="eyebrow">Return page</p>
+        <h1>Check latest payment status</h1>
+        <p class="lead">
+          This page tries to reload the last order created from the same browser. If the gateway does not append the order reference to your redirect URL, local storage is used as a fallback.
+        </p>
+
+        <div class="field-grid">
+          <label class="full-width">
+            <span>Order reference</span>
+            <input type="text" id="resultOrderRef" placeholder="Order reference" />
+          </label>
+        </div>
+
+        <div class="button-row">
+          <button id="checkNowBtn" type="button">Check now</button>
+          <button id="autoPollBtn" type="button" class="secondary">Start auto refresh</button>
+          <a class="button-link" href="/">Back to test page</a>
+        </div>
+
+        <div id="resultSummary" class="summary-box muted">Waiting for an order reference.</div>
+        <pre id="resultOutput" class="json-output">Ready.</pre>
+      </section>
+    </main>
+
+    <script src="/result.js"></script>
+  </body>
+</html>
