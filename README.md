@@ -94,6 +94,10 @@ Click **Test Authentication** to verify your API key is valid. On success, it sh
 | Mode | `sandbox` or `live` |
 | Access Token | Full JWT for manual API testing (copy/paste) |
 
+<p align="center">
+  <img src="images/01.png" width="700" alt="Dashboard header and Test Authentication panel" />
+</p>
+
 ### Step 1 — Create a Test Payment
 
 Fill in the payment form and click **Create payment**:
@@ -115,6 +119,10 @@ The raw API response is shown in the **Order Result** panel at the bottom, inclu
 ### Step 2 — Check Order Status
 
 After completing or abandoning a payment on the hosted pay page, return to the dashboard and click **Fetch status** to see the current order state. Use **Use last reference** to auto-fill the order reference from the previous step.
+
+<p align="center">
+  <img src="images/02.png" width="700" alt="Create payment form and Check order status panel" />
+</p>
 
 ---
 
@@ -165,6 +173,10 @@ Use these card numbers on the hosted pay page. Any CVV and any future expiry dat
 | Visa | `4663295942784758` | Declined (05) |
 | Mastercard | `5168441223630339` | Approved (00) |
 | Mastercard | `5513935292057458` | Declined (05) |
+
+<p align="center">
+  <img src="images/03.png" width="700" alt="Sandbox test cards and Order Result JSON panel" />
+</p>
 
 ---
 
