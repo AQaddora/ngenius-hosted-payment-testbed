@@ -1,0 +1,20 @@
+services:
+  - type: web
+    name: ngenius-payment-testbed
+    runtime: node
+    buildCommand: npm install --omit=dev
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: APP_BASE_URL
+        sync: false          # Set this to your Render URL after first deploy, e.g. https://ngenius-payment-testbed.onrender.com
+      # Optional: pre-configure sandbox credentials so the form is pre-filled
+      # - key: NGENIUS_API_KEY
+      #   sync: false
+      # - key: NGENIUS_OUTLET_ID
+      #   sync: false
+      # - key: NGENIUS_PROD_API_KEY
+      #   sync: false
+      # - key: NGENIUS_PROD_OUTLET_ID
+      #   sync: false
