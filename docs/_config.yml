@@ -1,0 +1,31 @@
+title: N-Genius Payment Testbed
+description: A local developer tool for testing N-Genius Hosted Payment Page integrations — authentication, order creation, capture, and refund.
+url: "https://AQaddora.github.io"
+baseurl: "/ngenius-hosted-payment-testbed"
+
+theme: jekyll-theme-slate
+
+author:
+  name: Ahmed Qaddoura
+  github: AQaddora
+
+repository: AQaddora/ngenius-hosted-payment-testbed
+
+markdown: kramdown
+highlighter: rouge
+
+kramdown:
+  input: GFM
+  syntax_highlighter: rouge
+
+defaults:
+  - scope:
+      path: ""
+      type: "pages"
+    values:
+      layout: "default"
+
+exclude:
+  - "*.gemspec"
+  - Gemfile
+  - Gemfile.lock

@@ -3,113 +3,160 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>N-Genius Hosted Payment Test</title>
+    <title>N-Genius Payment Testbed</title>
     <link rel="stylesheet" href="/styles.css" />
   </head>
   <body>
+    <!-- ── Overlays ───────────────────────────────────────────── -->
+    <div id="paymentOverlay" class="panel-overlay"></div>
+    <div id="orderOverlay"   class="panel-overlay"></div>
+
+    <!-- ── Payment iframe panel ──────────────────────────────── -->
+    <aside id="paymentPanel" class="side-panel" aria-label="Secure payment panel">
+      <header class="panel-header">
+        <div class="panel-title">
+          <p class="eyebrow" style="margin:0;font-size:10px;letter-spacing:.12em">Secure Payment</p>
+          <strong>N-Genius Hosted Page</strong>
+        </div>
+        <div class="panel-actions">
+          <button type="button" id="checkStatusPanelBtn" class="secondary panel-action-btn">Check status</button>
+          <button type="button" id="closePanelBtn"       class="panel-close-btn" aria-label="Close">✕</button>
+        </div>
+      </header>
+      <div id="panelStatusBar" class="panel-status-bar loading">Loading payment page…</div>
+      <iframe id="paymentIframe" title="N-Genius Payment" allow="payment"></iframe>
+    </aside>
+
+    <!-- ── Order details panel ───────────────────────────────── -->
+    <aside id="orderPanel" class="side-panel" aria-label="Order details">
+      <header class="panel-header">
+        <div class="panel-title">
+          <p class="eyebrow" style="margin:0;font-size:10px;letter-spacing:.12em">Order Details</p>
+          <strong id="orderPanelRef">—</strong>
+        </div>
+        <div class="panel-actions">
+          <button type="button" id="refreshOrderPanelBtn" class="secondary panel-action-btn">↻ Refresh</button>
+          <button type="button" id="closeOrderPanelBtn"   class="panel-close-btn" aria-label="Close">✕</button>
+        </div>
+      </header>
+      <div id="orderPanelBar" class="panel-status-bar">—</div>
+      <div id="orderPanelBody" class="order-panel-body">
+        <div class="op-placeholder">Select an order to view details.</div>
+      </div>
+    </aside>
+
+    <!-- ── Main page ─────────────────────────────────────────── -->
     <main class="page">
+
+      <!-- Hero -->
       <section class="hero card">
         <div>
           <p class="eyebrow">Network International / N-Genius</p>
-          <h1>Hosted Payment Page Test</h1>
-          <p class="lead">
-            Create a sandbox or production order, open the hosted pay page, then check the order status from the same test UI.
-          </p>
+          <h1>Payment Testbed</h1>
+          <p class="lead">Create orders, test payments, capture and refund. Click any order row to open details.</p>
+          <div style="margin-top:16px;display:flex;gap:10px;flex-wrap:wrap">
+            <a href="https://AQaddora.github.io/ngenius-hosted-payment-testbed" target="_blank" rel="noopener" class="button-link" style="font-size:13px;padding:8px 16px;gap:7px">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+              Open Live Testbed
+            </a>
+            <a href="https://github.com/AQaddora/ngenius-hosted-payment-testbed" target="_blank" rel="noopener" class="button-link secondary" style="font-size:13px;padding:8px 16px;gap:7px">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.167 6.839 9.49.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.004.07 1.532 1.032 1.532 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.03-2.683-.103-.253-.447-1.27.098-2.647 0 0 .84-.268 2.75 1.026A9.564 9.564 0 0112 6.844a9.59 9.59 0 012.504.337c1.909-1.294 2.748-1.026 2.748-1.026.547 1.377.203 2.394.1 2.647.641.699 1.028 1.592 1.028 2.683 0 3.842-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.579.688.481C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+              GitHub
+            </a>
+          </div>
         </div>
         <div class="env-toggle-row">
           <span class="env-toggle-label">Environment</span>
-          <div class="env-toggle" role="group" aria-label="Environment selector">
-            <button type="button" id="envSandboxBtn" class="env-btn active" data-env="sandbox">Sandbox</button>
-            <button type="button" id="envProductionBtn" class="env-btn" data-env="production">Production</button>
+          <div class="env-toggle" role="group">
+            <button type="button" id="envSandboxBtn"    class="env-btn active" data-env="sandbox">Sandbox</button>
+            <button type="button" id="envProductionBtn" class="env-btn"        data-env="production">Production</button>
           </div>
         </div>
         <div class="meta-grid">
-          <div class="meta-item">
-            <span>Mode</span>
-            <strong id="modeBadge">Loading…</strong>
-          </div>
-          <div class="meta-item">
-            <span>Outlet ID</span>
-            <strong id="outletValue">—</strong>
-          </div>
-          <div class="meta-item">
-            <span>Server URL</span>
-            <strong id="serverValue">—</strong>
-          </div>
+          <div class="meta-item"><span>Mode</span><strong id="modeBadge">Loading…</strong></div>
+          <div class="meta-item"><span>Outlet ID</span><strong id="outletValue">—</strong></div>
+          <div class="meta-item"><span>Server</span><strong id="serverValue">—</strong></div>
         </div>
       </section>
 
-      <section class="card">
-        <div class="section-title-row">
-          <h2>Test Authentication</h2>
-          <span class="pill">Step 0</span>
+      <!-- Test auth (collapsible) -->
+      <details class="card collapse-card" id="authSection">
+        <summary class="collapse-summary">
+          <span>Test Authentication</span>
+          <span class="pill muted-pill" id="authStepBadge">Step 0</span>
+        </summary>
+
+        <!-- Credential inputs — shown only when env vars are missing -->
+        <div id="credentialsForm" class="hidden" style="margin:14px 0 0">
+          <div class="summary-box warning" style="margin:0 0 14px">
+            <strong>Credentials not configured.</strong> Enter your N-Genius API key and Outlet ID below — they are stored locally in your browser only.
+          </div>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:12px">
+            <label><span>API Key</span><input type="password" id="inputApiKey" placeholder="Base64 API key…" autocomplete="off" /></label>
+            <label><span>Outlet ID</span><input type="text" id="inputOutletId" placeholder="xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx" autocomplete="off" /></label>
+          </div>
+          <div class="button-row" style="margin-top:0">
+            <button type="button" id="saveCredsBtn">Save credentials</button>
+            <button type="button" id="clearCredsBtn" class="secondary">Clear saved</button>
+          </div>
+          <div id="credsSaveStatus" class="summary-box muted hidden" style="margin-top:10px"></div>
         </div>
-        <p class="small muted">Verify your API key works and inspect the access token returned by N-Genius.</p>
+
+        <p class="small muted" style="margin:14px 0 14px">Verify your API key and inspect the access token.</p>
         <div class="button-row">
           <button type="button" id="testAuthBtn">Test Authentication</button>
         </div>
         <div id="authResult" class="auth-result hidden">
           <div class="auth-grid">
-            <div class="auth-field">
-              <span>Status</span>
-              <strong id="authStatus">—</strong>
-            </div>
-            <div class="auth-field">
-              <span>Account Name</span>
-              <strong id="authName">—</strong>
-            </div>
-            <div class="auth-field">
-              <span>Realm</span>
-              <strong id="authRealm">—</strong>
-            </div>
-            <div class="auth-field">
-              <span>Account Type</span>
-              <strong id="authType">—</strong>
-            </div>
-            <div class="auth-field">
-              <span>Token Expires</span>
-              <strong id="authExpiry">—</strong>
-            </div>
-            <div class="auth-field">
-              <span>Mode</span>
-              <strong id="authMode">—</strong>
-            </div>
+            <div class="auth-field"><span>Status</span><strong id="authStatus">—</strong></div>
+            <div class="auth-field"><span>Account</span><strong id="authName">—</strong></div>
+            <div class="auth-field"><span>Realm</span><strong id="authRealm">—</strong></div>
+            <div class="auth-field"><span>Type</span><strong id="authType">—</strong></div>
+            <div class="auth-field"><span>Expires</span><strong id="authExpiry">—</strong></div>
+            <div class="auth-field"><span>Mode</span><strong id="authMode">—</strong></div>
           </div>
-          <label class="full-width" style="margin-top:12px">
-            <span>Access Token (full — copy for manual testing)</span>
+          <label class="full-width" style="margin-top:10px">
+            <span>Access Token</span>
             <textarea id="authToken" rows="3" readonly style="font-size:11px;font-family:monospace;width:100%;resize:vertical"></textarea>
           </label>
         </div>
         <pre id="authOutput" class="json-output hidden">—</pre>
-      </section>
+      </details>
 
-      <section class="grid two-cols">
-        <form id="paymentForm" class="card form-card">
-          <div class="section-title-row">
-            <h2>Create test payment</h2>
-            <span class="pill">Step 1</span>
+      <!-- Orders -->
+      <section class="card">
+        <div class="section-title-row">
+          <h2>Orders</h2>
+          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap">
+            <div class="env-toggle" role="group" style="font-size:12px">
+              <button type="button" id="srcApiBtn"   class="env-btn active" style="padding:6px 14px;font-size:12px">From API</button>
+              <button type="button" id="srcLocalBtn" class="env-btn"        style="padding:6px 14px;font-size:12px">Saved locally</button>
+            </div>
+            <button type="button" id="refreshOrdersBtn" class="secondary" style="padding:6px 12px;font-size:13px">↻</button>
+            <button type="button" id="newOrderToggleBtn"                   style="padding:6px 14px;font-size:13px">+ New Order</button>
           </div>
+        </div>
 
-          <div class="field-grid">
+        <!-- New order form (collapsed) -->
+        <div id="newOrderForm" class="new-order-form hidden">
+          <div class="form-divider"></div>
+          <form id="paymentForm" class="new-order-grid">
             <label>
               <span>Amount</span>
               <input type="number" name="amount" value="10.00" min="0.01" step="0.01" required />
             </label>
-
             <label>
               <span>Currency</span>
-              <input type="text" name="currencyCode" value="USD" maxlength="3" required />
+              <input type="text" name="currencyCode" value="AED" maxlength="3" required />
             </label>
-
             <label>
               <span>Action</span>
               <select name="action">
-                <option value="AUTH" selected>AUTH</option>
-                <option value="PURCHASE">PURCHASE</option>
+                <option value="PURCHASE" selected>PURCHASE</option>
+                <option value="AUTH">AUTH</option>
                 <option value="SALE">SALE</option>
               </select>
             </label>
-
             <label>
               <span>Language</span>
               <select name="language">
@@ -117,127 +164,157 @@
                 <option value="ar">Arabic</option>
               </select>
             </label>
-
-            <label class="full-width">
+            <label class="span-2">
               <span>Email</span>
-              <input type="email" name="emailAddress" value="tester@example.com" placeholder="tester@example.com" />
+              <input type="email" name="emailAddress" value="tester@example.com" />
             </label>
-
-            <label class="full-width">
+            <label class="span-2">
               <span>Item description</span>
               <input type="text" name="itemDescription" value="N-Genius sandbox test order" />
             </label>
-
-            <label class="full-width">
+            <label class="span-2">
               <span>Redirect URL</span>
               <input type="url" name="redirectUrl" id="redirectUrlInput" />
             </label>
-          </div>
-
-          <div class="checkbox-row">
-            <label class="checkbox">
-              <input type="checkbox" id="autoRedirect" checked />
-              <span>Open the hosted pay page automatically after order creation</span>
-            </label>
-          </div>
-
-          <div class="button-row">
-            <button type="submit" id="createBtn">Create payment</button>
-            <button type="button" class="secondary" id="openLastPaymentBtn">Open last pay page</button>
-          </div>
-        </form>
-
-        <div class="card form-card">
-          <div class="section-title-row">
-            <h2>Check order status</h2>
-            <span class="pill">Step 2</span>
-          </div>
-
-          <form id="statusForm">
-            <label class="full-width">
-              <span>Order reference</span>
-              <input type="text" id="orderReferenceInput" name="reference" placeholder="Paste or reuse the last created order reference" required />
-            </label>
-
-            <div class="button-row">
-              <button type="submit">Fetch status</button>
-              <button type="button" class="secondary" id="useLastRefBtn">Use last reference</button>
-              <a href="/result.html" class="button-link">Open result page</a>
+            <div class="span-2" style="display:flex;align-items:center;gap:10px;margin-top:4px">
+              <label class="checkbox">
+                <input type="checkbox" id="autoRedirect" checked />
+                <span>Open payment panel automatically</span>
+              </label>
+            </div>
+            <div class="span-2 button-row" style="margin-top:4px">
+              <button type="submit" id="createBtn">Create &amp; Pay</button>
+              <button type="button" id="openLastPaymentBtn" class="secondary">Open last pay page</button>
+              <button type="button" id="cancelNewOrderBtn" class="secondary">Cancel</button>
             </div>
           </form>
+          <div id="createSummary" class="summary-box muted hidden">—</div>
+        </div>
 
-          <div id="statusSummary" class="summary-box muted">
-            No order checked yet.
-          </div>
+        <!-- Search row -->
+        <div class="lookup-row" style="margin-top:14px">
+          <input type="text" id="orderSearchInput" placeholder="Find by Order ID…" />
+          <button type="button" id="orderSearchBtn">Find</button>
+        </div>
+
+        <!-- Table -->
+        <div class="table-wrap" style="margin-top:10px">
+          <table id="ordersTable">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Order Reference</th>
+                <th>Action</th>
+                <th>Amount</th>
+                <th>State</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody id="ordersTableBody">
+              <tr><td colspan="6" class="table-empty">Loading orders…</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="orders-pagination" id="ordersPagination" style="display:none">
+          <button type="button" id="ordersPrevBtn" class="secondary" style="padding:6px 14px;font-size:13px">← Prev</button>
+          <span id="ordersPageLabel" style="font-size:13px;color:var(--muted)">Page 1</span>
+          <button type="button" id="ordersNextBtn" class="secondary" style="padding:6px 14px;font-size:13px">Next →</button>
         </div>
       </section>
 
-      <section class="card">
-          <div class="section-title-row">
-            <h2>Official sandbox test cards</h2>
-            <span class="pill muted-pill">Docs</span>
-          </div>
-          <div class="table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Scheme</th>
-                  <th>PAN</th>
-                  <th>Outcome</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Visa</td>
-                  <td><code>4111111111111111</code></td>
-                  <td>Success 00</td>
-                </tr>
-                <tr>
-                  <td>Visa</td>
-                  <td><code>4663295942784758</code></td>
-                  <td>Declined 05</td>
-                </tr>
-                <tr>
-                  <td>Mastercard</td>
-                  <td><code>5168441223630339</code></td>
-                  <td>Success 00</td>
-                </tr>
-                <tr>
-                  <td>Mastercard</td>
-                  <td><code>5513935292057458</code></td>
-                  <td>Declined 05</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-          <p class="small muted">
-            Use any CVV and expiry unless your specific test case says otherwise.
-          </p>
-      </section>
+      <!-- Test cards (collapsible) -->
+      <details class="card collapse-card">
+        <summary class="collapse-summary">
+          <span>Sandbox test cards</span>
+          <span class="pill muted-pill">Docs</span>
+        </summary>
+        <div class="table-wrap" style="margin-top:12px">
+          <table>
+            <thead><tr><th>Scheme</th><th>PAN</th><th>Outcome</th></tr></thead>
+            <tbody>
+              <tr><td>Visa</td><td><code>4111111111111111</code></td><td>Success 00</td></tr>
+              <tr><td>Visa</td><td><code>4663295942784758</code></td><td>Declined 05</td></tr>
+              <tr><td>Mastercard</td><td><code>5168441223630339</code></td><td>Success 00</td></tr>
+              <tr><td>Mastercard</td><td><code>5513935292057458</code></td><td>Declined 05</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="small muted" style="margin-top:10px">Use any CVV and expiry unless your test case says otherwise.</p>
+      </details>
 
-      <section class="card">
-        <div class="section-title-row">
-          <h2>Order Result</h2>
-          <span class="pill muted-pill">Debug</span>
-        </div>
-        <div id="orderResultBanner" class="hidden" style="margin-bottom:12px">
-          <div class="auth-grid">
-            <div class="auth-field">
-              <span>Order Reference</span>
-              <strong id="resultOrderRef">—</strong>
-            </div>
-            <div class="auth-field">
-              <span>Payment State</span>
-              <strong id="resultPayState">—</strong>
-            </div>
-          </div>
-          <div style="margin-top:10px">
-            <a id="resultPayLink" href="#" target="_blank" class="pay-link hidden">Open Payment Page →</a>
-          </div>
-        </div>
-        <pre id="apiOutput" class="json-output">Ready.</pre>
-      </section>
     </main>
+
+    <!-- ── Footer ──────────────────────────────────────── -->
+    <footer class="site-footer">
+      <div class="footer-inner">
+
+        <!-- Project -->
+        <div class="footer-col">
+          <p class="footer-eyebrow">N-Genius Payment Testbed</p>
+          <p class="footer-desc">A local developer tool for testing <a href="https://developer.ngenius-payments.com/docs/hosted-payment-page" target="_blank" rel="noopener">N-Genius Hosted Payment Page</a> integrations — auth, orders, capture, and refund.</p>
+          <div class="footer-links">
+            <a href="https://github.com/AQaddora/ngenius-hosted-payment-testbed" target="_blank" rel="noopener" class="footer-link">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2C6.477 2 2 6.477 2 12c0 4.418 2.865 8.167 6.839 9.49.5.092.682-.217.682-.482 0-.237-.009-.868-.013-1.703-2.782.604-3.369-1.342-3.369-1.342-.454-1.154-1.11-1.462-1.11-1.462-.908-.62.069-.608.069-.608 1.004.07 1.532 1.032 1.532 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.11-4.555-4.943 0-1.091.39-1.984 1.03-2.683-.103-.253-.447-1.27.098-2.647 0 0 .84-.268 2.75 1.026A9.564 9.564 0 0112 6.844a9.59 9.59 0 012.504.337c1.909-1.294 2.748-1.026 2.748-1.026.547 1.377.203 2.394.1 2.647.641.699 1.028 1.592 1.028 2.683 0 3.842-2.337 4.687-4.565 4.935.359.309.678.919.678 1.852 0 1.336-.012 2.415-.012 2.741 0 .267.18.579.688.481C19.138 20.163 22 16.418 22 12c0-5.523-4.477-10-10-10z"/></svg>
+              GitHub Repo
+            </a>
+            <a href="https://AQaddora.github.io/ngenius-hosted-payment-testbed" target="_blank" rel="noopener" class="footer-link">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 3h6a4 4 0 014 4v14a3 3 0 00-3-3H2z"/><path d="M22 3h-6a4 4 0 00-4 4v14a3 3 0 013-3h7z"/></svg>
+              Docs Site
+            </a>
+          </div>
+        </div>
+
+        <!-- Official docs -->
+        <div class="footer-col">
+          <p class="footer-col-title">Official N-Genius Docs</p>
+          <ul class="footer-nav">
+            <li><a href="https://developer.ngenius-payments.com" target="_blank" rel="noopener">Developer Portal</a></li>
+            <li><a href="https://developer.ngenius-payments.com/docs/hosted-payment-page" target="_blank" rel="noopener">Hosted Payment Page</a></li>
+            <li><a href="https://developer.ngenius-payments.com/reference" target="_blank" rel="noopener">API Reference</a></li>
+            <li><a href="https://developer.ngenius-payments.com/docs/order-states" target="_blank" rel="noopener">Order States</a></li>
+            <li><a href="https://developer.ngenius-payments.com/docs/test-cards" target="_blank" rel="noopener">Test Cards</a></li>
+            <li><a href="https://developer.ngenius-payments.com/docs/webhooks" target="_blank" rel="noopener">Webhooks</a></li>
+            <li><a href="https://merchant.sandbox.ngenius-payments.com" target="_blank" rel="noopener">Sandbox Portal</a></li>
+          </ul>
+        </div>
+
+        <!-- Repo docs -->
+        <div class="footer-col">
+          <p class="footer-col-title">Testbed Docs</p>
+          <ul class="footer-nav">
+            <li><a href="https://AQaddora.github.io/ngenius-hosted-payment-testbed" target="_blank" rel="noopener">Getting Started</a></li>
+            <li><a href="https://AQaddora.github.io/ngenius-hosted-payment-testbed/authentication" target="_blank" rel="noopener">Authentication</a></li>
+            <li><a href="https://AQaddora.github.io/ngenius-hosted-payment-testbed/creating-orders" target="_blank" rel="noopener">Creating Orders</a></li>
+            <li><a href="https://AQaddora.github.io/ngenius-hosted-payment-testbed/orders" target="_blank" rel="noopener">Orders &amp; Status</a></li>
+            <li><a href="https://AQaddora.github.io/ngenius-hosted-payment-testbed/capture-refund" target="_blank" rel="noopener">Capture &amp; Refund</a></li>
+            <li><a href="https://AQaddora.github.io/ngenius-hosted-payment-testbed/api-reference" target="_blank" rel="noopener">API Reference</a></li>
+            <li><a href="https://AQaddora.github.io/ngenius-hosted-payment-testbed/test-cards" target="_blank" rel="noopener">Test Cards</a></li>
+          </ul>
+        </div>
+
+        <!-- Author card -->
+        <div class="footer-col">
+          <p class="footer-col-title">Built by</p>
+          <a href="https://github.com/AQaddora" target="_blank" rel="noopener" class="author-card">
+            <img src="https://github.com/AQaddora.png" alt="Ahmed Qaddoura" class="author-avatar" width="52" height="52" />
+            <div class="author-info">
+              <strong>Ahmed Qaddoura</strong>
+              <span>@AQaddora</span>
+              <span class="author-follow">View on GitHub →</span>
+            </div>
+          </a>
+        </div>
+
+      </div>
+      <div class="footer-bottom">
+        <span>© 2026 Ahmed Qaddoura — MIT License</span>
+        <span class="footer-bottom-links">
+          <a href="https://github.com/AQaddora/ngenius-hosted-payment-testbed" target="_blank" rel="noopener">GitHub</a>
+          <a href="https://developer.ngenius-payments.com" target="_blank" rel="noopener">N-Genius Docs</a>
+        </span>
+      </div>
+    </footer>
 
     <script src="/app.js"></script>
   </body>
